@@ -25,7 +25,7 @@ IS
 	END before_each_test;
 
 	----------------------------------------------------------------------------
-	--	Clean Up After Each Individual Test
+	--	Clean Up After Each Individual Test 
 	----------------------------------------------------------------------------
 	-- %aftereach
 	PROCEDURE after_each_test
