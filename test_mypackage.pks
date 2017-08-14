@@ -16,11 +16,8 @@ IS
 	-- %afterall
 	PROCEDURE global_cleanup;
 
-	-- %test(********** This is Test #1)
+	-- %test(this is a test)
 	PROCEDURE test_1;
-
-	-- %test(********** This is Test #2)
-	PROCEDURE test_2;
 
 END test_mypackage;
 /
