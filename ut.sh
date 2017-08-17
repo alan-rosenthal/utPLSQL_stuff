@@ -1,6 +1,6 @@
 #!/usr/bin/sh
 
-sqlplus -silent arosenthal/okcwam0#@viper <<EOF
+sqlplus -silent arosenthal@viper <<EOF
 clear screen
 set serveroutput on
 
