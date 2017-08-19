@@ -37,6 +37,9 @@ IS
 	BEGIN
       DELETE FROM four
        WHERE 1=1;
+       
+      DELETE FROM four_test
+       WHERE 1=1;
 
 	END before_each_test;
 
@@ -79,19 +82,19 @@ IS
       v_v   four.v%TYPE;
       
 	BEGIN
-      INSERT INTO four (n, d, v) VALUES (3.14159, TO_DATE('15-JUN-1959', 'DD-MON-YYYY'), 'Happy Birthday');
+      insert_row(3.14159, TO_DATE('15-JUN-1959', 'DD-MON-YYYY'), 'Happy Birthday');
       
       SELECT COUNT(*)
         INTO n
         FROM four;
-      ut.expect( n ).to_equal(1);
+      ut.expect( n ).to_equal( 1 );
       
       SELECT n, d, v
         INTO v_n, v_d, v_v
         FROM four;
       ut.expect( v_n ).to_equal( 3.14159 );
       ut.expect( v_d ).to_equal( TO_DATE('15-JUN-1959', 'DD-MON-YYYY') );
-      ut.expect( v_v ).to_equal( 'Happy Birthday' ); 
+      ut.expect( v_v ).to_equal( 'HAPPY BIRTHDAY' ); 
       
    END one_row;
       
@@ -106,29 +109,81 @@ IS
       expect_cur  sys_refcursor;
  
 	BEGIN
-      INSERT INTO four (n, d, v) VALUES (123, TO_DATE('15-JUN-1959', 'DD-MON-YYYY'), 'Alan');
-      INSERT INTO four (n, d, v) VALUES (456, TO_DATE('01-MAY-1961', 'DD-MON-YYYY'), 'Ellin');
-      INSERT INTO four (n, d, v) VALUES (789, TO_DATE('22-NOV-1990', 'DD-MON-YYYY'), 'Sarah');
+      insert_row(123, TO_DATE('15-JUN-1959', 'DD-MON-YYYY'), 'Alan');
+      insert_row(456, TO_DATE('01-MAY-1961', 'DD-MON-YYYY'), 'Ellin');
+      insert_row(789, TO_DATE('22-NOV-1990', 'DD-MON-YYYY'), 'Sarah');
 
-      SELECT COUNT(*)
-        INTO n
-        FROM four;
-      ut.expect( n ).to_equal( 3 );
-      
       OPEN actual_cur FOR SELECT n, d, v 
                             FROM four 
                         ORDER BY d;
                         
       OPEN expect_cur FOR SELECT n, d, v
-                            FROM (SELECT 1231 as n, TO_DATE('15-JUN-1959', 'DD-MON-YYYY') as d, 'Alan' as v FROM DUAL
+                            FROM (SELECT 123 as n, TO_DATE('15-JUN-1959', 'DD-MON-YYYY') as d, 'ALAN' as v FROM DUAL
                                   UNION
-                                  SELECT 456 as n, TO_DATE('01-MAY-1961', 'DD-MON-YYYY') as d, 'Ellin' as v FROM DUAL
+                                  SELECT 456 as n, TO_DATE('01-MAY-1961', 'DD-MON-YYYY') as d, 'ELLIN' as v FROM DUAL
                                   UNION
-                                  SELECT 789 as n, TO_DATE('22-NOV-1990', 'DD-MON-YYYY') as d, 'Sarah' as v FROM DUAL)
+                                  SELECT 789 as n, TO_DATE('22-NOV-1990', 'DD-MON-YYYY') as d, 'SARAH' as v FROM DUAL)
                          ORDER BY d;
       ut.expect( actual_cur ).to_equal( expect_cur );     
             
    END three_rows;
+
+	-----------------------------------------------------------------------------
+	-- Procedure five_rows
+	--    Insert five_rows into table
+	-----------------------------------------------------------------------------
+	PROCEDURE five_rows
+	IS
+      n           NUMBER;
+      actual_cur1  sys_refcursor;
+      expect_cur1  sys_refcursor;
+ 
+	BEGIN
+      INSERT INTO four_test ( n, d, v ) VALUES (123, TO_DATE('15-JUN-1959', 'DD-MON-YYYY'), 'ALAN');
+      INSERT INTO four_test ( n, d, v ) VALUES (456, TO_DATE('01-MAY-1961', 'DD-MON-YYYY'), 'ELLIN');
+      INSERT INTO four_test ( n, d, v ) VALUES (789, TO_DATE('19-Jun-1995', 'DD-MON-YYYY'), 'RACHEL');
+      INSERT INTO four_test ( n, d, v ) VALUES (012, TO_DATE('22-NOV-1990', 'DD-MON-YYYY'), 'SARAH');
+      INSERT INTO four_test ( n, d, v ) VALUES (345, TO_DATE('04-Sep-1992', 'DD-MON-YYYY'), 'EMILY');
+      
+      insert_row(123, TO_DATE('15-JUN-1959', 'DD-MON-YYYY'), ' Alan      ');
+      insert_row(456, TO_DATE('01-MAY-1961', 'DD-MON-YYYY'), '  Ellin    ');
+      insert_row(789, TO_DATE('19-Jun-1995', 'DD-MON-YYYY'), '   Rachel  ');
+      insert_row(012, TO_DATE('22-NOV-1990', 'DD-MON-YYYY'), '    Sarah  ');
+      insert_row(345, TO_DATE('04-Sep-1992', 'DD-MON-YYYY'), '     Emily ');
+      
+      OPEN actual_cur1 FOR SELECT n, d, v 
+                            FROM four 
+                        ORDER BY d;
+                        
+      OPEN expect_cur1 FOR SELECT n, d, v
+                            FROM four_test
+                        ORDER BY d;
+                         
+      ut.expect( actual_cur1 ).to_equal( expect_cur1 );     
+            
+   END five_rows;
+
+----------------------------------------------------------------------------
+	--	Procedure unqiue_index 
+	--		A test example
+	----------------------------------------------------------------------------
+	PROCEDURE unique_index 
+	IS
+      
+	BEGIN
+      insert_row(999, TO_DATE('01-Jan-2017', 'DD-MON-YYYY'), 'aaa');
+      insert_row(123, TO_DATE('01-Jan-2017', 'DD-MON-YYYY'), 'bbb');
+      insert_row(321, TO_DATE('01-Jan-2017', 'DD-MON-YYYY'), 'ccc');
+		
+   EXCEPTION
+      WHEN DUP_VAL_ON_INDEX THEN
+         NULL;
+         
+      WHEN OTHERS THEN
+         RAISE;
+         
+	END unique_index;
+	
 
 
 END test_insert_row_proc;

@@ -25,7 +25,7 @@ IS
    -- %test(**********     Test 3rows in table, cursor data embedded in package approach)
    PROCEDURE three_rows;
    
-   -- %test(**********     Test 3rows in table, comparing to GTT approach)
+   -- %test(**********     Test 3rows in table, comparing to temp test table approach)
    PROCEDURE five_rows;
    
    -- %test(**********     Test unique index)
