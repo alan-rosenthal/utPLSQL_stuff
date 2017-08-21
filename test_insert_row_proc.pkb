@@ -22,10 +22,6 @@ IS
 	BEGIN
       NULL;
 
-   EXCEPTION
-      WHEN OTHERS THEN
-         RAISE;
-         
 	END global_cleanup;
 
 	----------------------------------------------------------------------------
