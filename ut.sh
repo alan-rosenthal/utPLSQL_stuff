@@ -1,5 +1,6 @@
 #!/usr/bin/sh
 
+clear
 #sqlplus -silent arosenthal@viper <<EOF
 sqlplus -silent alan/alan@oracle12c <<EOF
 clear screen
